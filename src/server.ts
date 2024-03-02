@@ -37,7 +37,7 @@ app.get("/", (req: Request, res: Response) => {
   res.render('google-widget.html.twig', {
     // todo: create separate files for data used in twig file
     reviews : [],
-    config: {businessName: 'Google Recenzije'},
+    config: {businessName: 'Google Recenzije do Google Recenzije'},
     location: {}
   });
 });
