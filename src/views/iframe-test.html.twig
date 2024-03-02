@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title>Google Widget Iframe test</title>
+	</head>
+	<body>
+		<style>
+			#googleRatingWidgetIframe {
+				position: fixed !important;
+				bottom: 0;
+				left: 0;
+				border: 0 !important;
+				outline: 0 !important;
+				z-index: 9999999999 !important;
+			}
+			#googleRatingWidgetIframe.grw-full-screen {
+				top: 0 !important;
+				bottom: 0 !important;
+				left: 0 !important;
+				right: 0 !important;
+			}
+		</style>
+		<iframe id="googleRatingWidgetIframe" class="google-widget" src="http://127.0.0.1:9998" loading="lazy" sandbox="allow-scripts" onload="connectToFrame();"></iframe>
+		<script>
+			let googleReviewsWidgetIFrame;
+			let googleReviewsWidgetIFrameElement;
+			let googleReviewsWidgetIFrameParams;
+			function connectToFrame() {
+				googleReviewsWidgetIFrameElement = document.getElementById("googleRatingWidgetIframe");
+				googleReviewsWidgetIFrame = googleReviewsWidgetIFrameElement.contentWindow;
+				googleReviewsWidgetIFrame.postMessage('google-reviews-widget-handshake', '*');
+			}
+			window.addEventListener("message", (event) => {
+					// if (event.origin !== 'https://rest.review.co.rs') return;
+					// initial configuration of the iframe
+					if (event.data.slice(0,7) === 'config:') {
+						const data = event.data.split(':')[1].split('&') || [];
+						const params = {};
+						for (let i = 0; i < data.length; i++) {
+							const param = data[i].split('=');
+							params[param[0]] = param[1];
+						}
+						googleReviewsWidgetIFrameParams = params;
+						setiFrameWidthEndHeight(params.width, params.height);
+					}
+					else if (event.data === "google-reviews-opened") {
+						googleReviewsWidgetIFrameElement.classList.add("grw-full-screen");
+						setiFrameWidthEndHeight(false, false);
+					} else if (event.data === "google-reviews-closed") {
+						setTimeout(() => {
+							googleReviewsWidgetIFrameElement.classList.remove("grw-full-screen");
+							setiFrameWidthEndHeight(googleReviewsWidgetIFrameParams.width, googleReviewsWidgetIFrameParams.height);
+						}, 500);
+					}
+				}, false,
+			);
+			function setiFrameWidthEndHeight(width, height) {
+				googleReviewsWidgetIFrameElement.style.width = width ?`${+width + 26}px` : "100%";
+				googleReviewsWidgetIFrameElement.style.height = height ? `${+height + 26}px` : "100%";
+			}
+		</script>
+	</body>
+</html>

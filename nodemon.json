@@ -1,0 +1,5 @@
+{
+  "watch": ["src"],
+  "ext": "ts,json,twig",
+  "exec": "npx ts-node src/server.ts"
+}
