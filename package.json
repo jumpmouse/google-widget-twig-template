@@ -2,7 +2,6 @@
   "name": "google-widget-twig-template",
   "version": "1.0.0",
   "description": "twig template for server side rendering of iframe content - for Google Reviews Widget",
-  "main": "./dist/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc",
