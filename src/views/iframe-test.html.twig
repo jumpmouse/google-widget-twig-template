@@ -11,10 +11,9 @@
 			#googleRatingWidgetIframe {
 				position: fixed !important;
 				bottom: 0;
-				left: 0;
 				border: 0 !important;
 				outline: 0 !important;
-				z-index: 9999999999 !important;
+				z-index: 999999 !important;
 			}
 			#googleRatingWidgetIframe.grw-full-screen {
 				top: 0 !important;
@@ -37,14 +36,7 @@
 					// if (event.origin !== 'https://rest.review.co.rs') return;
 					// initial configuration of the iframe
 					if (event.data.slice(0,7) === 'config:') {
-						const data = event.data.split(':')[1].split('&') || [];
-						const params = {};
-						for (let i = 0; i < data.length; i++) {
-							const param = data[i].split('=');
-							params[param[0]] = param[1];
-						}
-						googleReviewsWidgetIFrameParams = params;
-						setiFrameWidthEndHeight(params.width, params.height);
+						initialConfiguration(event);
 					}
 					else if (event.data === "google-reviews-opened") {
 						googleReviewsWidgetIFrameElement.classList.add("grw-full-screen");
@@ -57,6 +49,18 @@
 					}
 				}, false,
 			);
+			function initialConfiguration(event) {
+				const data = event.data.split(':')[1].split('&') || [];
+				const params = {};
+				for (let i = 0; i < data.length; i++) {
+					const param = data[i].split('=');
+					params[param[0]] = param[1];
+				}
+				googleReviewsWidgetIFrameParams = params;
+				setiFrameWidthEndHeight(params.width, params.height);
+				// todo set other parameters
+			}
+
 			function setiFrameWidthEndHeight(width, height) {
 				googleReviewsWidgetIFrameElement.style.width = width ?`${+width + 26}px` : "100%";
 				googleReviewsWidgetIFrameElement.style.height = height ? `${+height + 26}px` : "100%";
